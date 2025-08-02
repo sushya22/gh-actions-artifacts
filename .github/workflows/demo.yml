@@ -18,6 +18,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{steps.jsfile.outputs.Jsfile}}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -25,6 +27,9 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Fetch js file name
+        id: jsfile
+        run: find dist/assets/*.js -type f -execdir echo 'Jsfile={}' >> $GITHUB_OUTPUT ';'
       - name: create an artifact
         uses: actions/upload-artifact@v4
         with:
